@@ -1,0 +1,12 @@
+#logo-container, .header, .section_header {
+    font-family: 'Lobster', cursive;
+}
+#sign_up_form_section {
+    width: 100%;
+    padding: 20px;
+}
+@media all and (min-width: 500px) {
+    #sign_up_form_section {
+        width: 70%;
+    }
+}
