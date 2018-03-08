@@ -8,11 +8,32 @@
 <body>
   <div id="header">
     <span class="logo">bookmark</span>
+    {%if request.user.is_authenticated %}
+    <ul class="menu">
+      <li {% if section == "Option 1"%}class="selected"{%endif%}>
+        <a href="{%url "dashboard"%}">Option 3</a>
+      </li>
+      <li {%if section == "Option 2"%} class="selected"{%endif%}>
+        <a href="#">Option 3</a>
+      </li>
+      <li {%if section == "Option 3"%} class="selected"{%endif%}>
+        <a href="#">Option 3</a>
+      </li>
+      {%endif%}
+
+      <span class="user">
+        {% if request.user.is_authenticated%}
+          Hello {{ request.user.first_name }},
+          <a href="{% url 'logout'%}">Log-out</a>
+          {%else%}
+          <a href="{% url 'login'%}">Log-in</a>
+          {%endif%}
+        </span>
       </div>
 
 
 
-  </div>
+
   <div id="content">
     {%block content%}
     {%endblock%}
