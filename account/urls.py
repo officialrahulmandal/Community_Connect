@@ -8,4 +8,6 @@ url(r'^logout-then-login/$',logout_then_login,name='logout_then_login'),
 url(r'^password-change/$',password_change,name="password_change"),
 url(r'^password-change/done/$',password_change_done,name="password_change_done"),
 url(r'^$',views.dashboard,name='dashboard'),
+url(r'^register/$',views.register,name='register'),
+
 ]
