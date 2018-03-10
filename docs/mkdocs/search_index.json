@@ -1,0 +1,39 @@
+{
+    "docs": [
+        {
+            "location": "/",
+            "text": "Introduction\n\n\nCommunity Connect is a simple application to help automate the management of any Community.\nIt is free and open-source.\nYou can simply \ndownload\n the code from GitLab.\n\n\nFeatures\n\n\n\n\nMade using Django.\n\n\nEasy to setup & manipulate as per the needs.\n\n\nChannels to ensure that the members receive only the mails they want to receive.\n\n\n\n\nInstallation\n\n\nFollow these steps on your server to ensure that your the application works properly.\nInstructions only for linux server.\n\n\n\n\nInstall Python 3.5 and Pip\n\n\nDebian-Family: \nsudo apt install python3.5 python3-pip\n\n\n\n\n\n\nInstall Requirements: \npip3 install -r requirements.txt\n\n\nSetup Database\n\n\nInstall PostgreSQL\n\nsudo apt update; sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib;\n\n\nCreate User/Role\n\n\nsudo -i -u postgres\n\n\npsql\n\n\nCREATE USER community_connect WITH PASSWORD 'MY_AWESOME_PASSWORD';\n\n\n\n\n\n\nConfigure User/Role\n\n\nALTER ROLE community_connect SET client_encoding TO 'utf8';\n\n\nALTER ROLE community_connect SET default_transaction_isolation TO 'read committed';\n\n\nALTER ROLE community_connect SET timezone TO 'UTC';\n\n\n\n\n\n\nConfig Database with django\n\n\nOpen \nCommunity-Connect/Community_Connect/settings.py\n and navigate to line \n'PASSWORD': 'MY_AWESOME_PASSWORD',\n and set your password here.\n\n\npython3 manage.py makemigrations\n\n\npython3 manage.py migrate\n\n\n\n\n\n\n\n\n\n\nInstall nginx\n// Update user-documentation from this point",
+            "title": "Getting-Started"
+        },
+        {
+            "location": "/#introduction",
+            "text": "Community Connect is a simple application to help automate the management of any Community.\nIt is free and open-source.\nYou can simply  download  the code from GitLab.",
+            "title": "Introduction"
+        },
+        {
+            "location": "/#features",
+            "text": "Made using Django.  Easy to setup & manipulate as per the needs.  Channels to ensure that the members receive only the mails they want to receive.",
+            "title": "Features"
+        },
+        {
+            "location": "/#installation",
+            "text": "Follow these steps on your server to ensure that your the application works properly.\nInstructions only for linux server.   Install Python 3.5 and Pip  Debian-Family:  sudo apt install python3.5 python3-pip    Install Requirements:  pip3 install -r requirements.txt  Setup Database  Install PostgreSQL sudo apt update; sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib;  Create User/Role  sudo -i -u postgres  psql  CREATE USER community_connect WITH PASSWORD 'MY_AWESOME_PASSWORD';    Configure User/Role  ALTER ROLE community_connect SET client_encoding TO 'utf8';  ALTER ROLE community_connect SET default_transaction_isolation TO 'read committed';  ALTER ROLE community_connect SET timezone TO 'UTC';    Config Database with django  Open  Community-Connect/Community_Connect/settings.py  and navigate to line  'PASSWORD': 'MY_AWESOME_PASSWORD',  and set your password here.  python3 manage.py makemigrations  python3 manage.py migrate      Install nginx\n// Update user-documentation from this point",
+            "title": "Installation"
+        },
+        {
+            "location": "/config/",
+            "text": "Frontend\n\n\nYou can customize the site the way you want simply by going to the DATA FILE.\nSee \nPydelhi Mail\n as a live demo of the site.\nHere is a list of variables you can tweek in the DATA FILE to change your frontend Design.\n\n\n\n\n\n// ADD DATA FILE\n\n\nBackend\n\n\nYou can change the number od channels and channel names.\nYou can also change the channels the user is subscribed to by default.",
+            "title": "Configurations"
+        },
+        {
+            "location": "/config/#frontend",
+            "text": "You can customize the site the way you want simply by going to the DATA FILE.\nSee  Pydelhi Mail  as a live demo of the site.\nHere is a list of variables you can tweek in the DATA FILE to change your frontend Design.   // ADD DATA FILE",
+            "title": "Frontend"
+        },
+        {
+            "location": "/config/#backend",
+            "text": "You can change the number od channels and channel names.\nYou can also change the channels the user is subscribed to by default.",
+            "title": "Backend"
+        }
+    ]
+}
