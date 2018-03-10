@@ -1,13 +1,16 @@
-from django.conf.urls import url
+from django.urls import path
 from django.contrib.auth.views import login, logout, logout_then_login,password_change,password_change_done
 from . import views
-urlpatterns = [
-url(r'^login/$',login,name='login'),
-url(r'^logout/$',logout,name='logout'),
-url(r'^logout-then-login/$',logout_then_login,name='logout_then_login'),
-url(r'^password-change/$',password_change,name="password_change"),
-url(r'^password-change/done/$',password_change_done,name="password_change_done"),
-url(r'^$',views.dashboard,name='dashboard'),
-url(r'^register/$',views.register,name='register'),
+from django.conf import settings
 
+urlpatterns = [
+# views/accounts/
+path('',views.dashboard, name='dashboard'),
+path('register/', views.register, name='register'),
+# views/registration
+path('login/', login, { 'extra_context': { "community": settings.COMMUNITY,} }, name='login'),
+path('logout/', logout, { 'extra_context': { "community": settings.COMMUNITY,} }, name='logout'),
+path('logout-then-login/', logout_then_login, { 'extra_context': { "community": settings.COMMUNITY,} }, name='logout_then_login'),
+path('password-change/', password_change, { 'extra_context': { "community": settings.COMMUNITY,} }, name="password_change"),
+path('password-change/done/', password_change_done, { 'extra_context': { "community": settings.COMMUNITY,} }, name="password_change_done"),
 ]
