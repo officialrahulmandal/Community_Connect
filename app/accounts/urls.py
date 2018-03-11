@@ -1,5 +1,11 @@
 from django.urls import path
-from django.contrib.auth.views import login, logout, logout_then_login,password_change,password_change_done
+from django.contrib.auth.views import (
+    login,
+    logout,
+    logout_then_login,
+    password_change,
+    password_change_done
+)
 from . import views
 from django.conf import settings
 
