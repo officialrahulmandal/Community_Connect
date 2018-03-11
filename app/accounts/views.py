@@ -5,11 +5,11 @@ from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from .forms import LoginForm, UserRegistrationForm
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
-
-@login_required
+@login_required(login_url='/accounts/login/')
 def dashboard(request):
-    return render(request, 'accounts/dashboard.html', {'section': 'dashboard'})
+    return render(request,'accounts/dashboard.html',{'section':'dashboard', "community": settings.COMMUNITY })
 
 
 def user_login(request):
@@ -29,7 +29,7 @@ def user_login(request):
                 return HttpResponse('invalid login')
     else:
         form = LoginForm()
-    return render(request, 'accounts/login.html', {'form': form})
+        return render(request, 'accounts/login.html', { 'form':form, "community": settings.COMMUNITY })
 
 
 def register(request):
@@ -39,7 +39,13 @@ def register(request):
             new_user = user_form.save(commit=False)
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
-            return render(request, 'accounts/register_done.html', {'new_user': new_user})
+            return render(request,'accounts/register_done.html',{'new_user':new_user})
+        else:
+            return render(request,'accounts/register.html', {'user_form':user_form, "community": settings.COMMUNITY})
     else:
-        user_form = UserRegistrationForm()
-    return render(request, 'accounts/register.html', {'user_form': user_form})
+        user_form=UserRegistrationForm()
+        return render(request,'accounts/register.html', {'user_form':user_form, "community": settings.COMMUNITY})
+
+
+def home(request):
+    return render(request, 'index.html', {"community": settings.COMMUNITY})

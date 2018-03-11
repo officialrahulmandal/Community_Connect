@@ -16,8 +16,8 @@ class UserRegistrationForm(forms.ModelForm):
         model = User
         fields = ('username', 'first_name', 'email')
 
-    def clean_password2(self):
+    def clean_repeat_password(self):
         cd = self.cleaned_data
-        if cd['password'] != cd['password2']:
+        if cd['password'] != cd['repeat_password']:
             raise forms.ValidationError('password don\'t match .')
-        return cd['password2']
+        return cd['repeat_password']

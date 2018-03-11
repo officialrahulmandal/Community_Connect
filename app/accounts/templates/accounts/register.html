@@ -1,12 +1,17 @@
-{%extends "base.html"%}
-{%block title%}Create an account{%endblock%}
-
-{%block content%}
-<h1>Create an account</h1>
-<p>Please , signup using the following form</p>
-<form action="." method="post">
-  {{user_form.as_p}}
-  {%csrf_token%}
-  <p><input type="submit" value="Create my account"></p>
-</form>
-{%endblock%}
+<!-- including the _base.html templates -->
+{% extends 'components/_base.html' %}
+<!-- referring to the block in base.html -->
+{% block content %}
+<!-- signup form  -->
+<div class="container">
+    <h1 class='section_header'>Sign Up</h1>
+    <div id='sign_up_form_section'>
+        <form action="" method="POST" class="post-form">
+            {% csrf_token %}
+            <!-- here form is the input coming from signup/views.py -->
+            {{user_form.as_p }}
+            <button type="submit" class="btn-large waves-effect waves-light {{ community.site_theme_text }}">Create my account</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

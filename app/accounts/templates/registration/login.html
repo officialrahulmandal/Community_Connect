@@ -1,21 +1,17 @@
-{%extends 'base.html'%}
-{%block title%}Log-in{%endblock%}
+<!-- including the _base.html templates -->
+{% extends 'components/_base.html' %}
+{% block title %} Log-in {% endblock %}
 {%block content%}
-<h1>Log-In</h1>
-{%if forms.errors%}
-<p>
-  your username and password didn't match
-  please try again
-</p>
-{%else%}
-<p> Please, use the following forms to log in. if you don't have an account <a href="{% url 'register'%}">register here</a> </p>
-{%endif%}
-<div class="login-form">
-<form action="{%url 'login'%}" method="post">
-  {{form.as_p}}
-  {% csrf_token%}
-  <input type="hidden" name="next" value="{{ next}}" />
-  <p><input type="submit" value="Log-in"></p>
-</form>
+<!-- login form  -->
+<div class="container">
+    <h1 class='section_header'>Login</h1>
+    <div id='sign_up_form_section'>
+        <form action="" method="POST" class="post-form">
+            {% csrf_token %}
+            <!-- here form is the input coming from signup/views.py -->
+            {{ form.as_p }}
+            <button type="submit" class="btn-large waves-effect waves-light {{ community.site_theme_text }}">Create my account</button>
+        </form>
+    </div>
 </div>
-{%endblock%}
+{% endblock %}
