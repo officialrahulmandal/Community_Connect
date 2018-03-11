@@ -18,7 +18,7 @@ from django.views import View
 
 @login_required(login_url='/accounts/login/')
 def dashboard(request):
-    return render(request,'accounts/dashboard.html',{'section':'dashboard', "community": settings.COMMUNITY })
+    return render(request, 'accounts/dashboard.html', {'section': 'dashboard', "community": settings.COMMUNITY})
 
 
 def user_login(request):
@@ -38,7 +38,7 @@ def user_login(request):
                 return HttpResponse('invalid login')
     else:
         form = LoginForm()
-        return render(request, 'accounts/login.html', { 'form':form, "form_page_name":'Login', "community": settings.COMMUNITY })
+        return render(request, 'accounts/login.html', {'form': form, "form_page_name": 'Login', "community": settings.COMMUNITY})
 
 
 class AccountActivation(View):
@@ -46,6 +46,7 @@ class AccountActivation(View):
     AccountActivation class used for activating new user's account.
     Once a user clicks on the link from their email. It gives them an oppertunity to set their password.
     '''
+
     def get(self, request, uidb64, token):
         try:
             uid = force_text(urlsafe_base64_decode(uidb64))
@@ -58,14 +59,14 @@ class AccountActivation(View):
             user.save()
             login(request, user)
             form = ResetPassword()
-            return render(request, 'accounts/forms.html', { 'form':form, "form_page_name":'Set Password', "community": settings.COMMUNITY })
+            return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Set Password', "community": settings.COMMUNITY})
         else:
-            return render(request,'accounts/messages.html',{ "msg_page_name": "Failed", 'message': 'Link is invalid!',"community": settings.COMMUNITY })
+            return render(request, 'accounts/messages.html', {"msg_page_name": "Failed", 'message': 'Link is invalid!', "community": settings.COMMUNITY})
 
     def post(self, request, uidb64, token):
         form = ResetPassword(request.POST)
         if form.is_valid():
-            cd=form.cleaned_data
+            cd = form.cleaned_data
             user = authenticate(password=cd['password'])
             try:
                 uid = force_text(urlsafe_base64_decode(uidb64))
@@ -78,11 +79,11 @@ class AccountActivation(View):
                 user.save()
                 login(request, user)
                 # return redirect('home')
-                return render(request,'accounts/messages.html',{ "msg_page_name": "Success", 'message': 'Thank you for your email confirmation. Now you can login your account.',"community": settings.COMMUNITY })
+                return render(request, 'accounts/messages.html', {"msg_page_name": "Success", 'message': 'Thank you for your email confirmation. Now you can login your account.', "community": settings.COMMUNITY})
             else:
-                return render(request,'accounts/messages.html',{ "msg_page_name": "Failed", 'message': 'Link is invalid!',"community": settings.COMMUNITY })
+                return render(request, 'accounts/messages.html', {"msg_page_name": "Failed", 'message': 'Link is invalid!', "community": settings.COMMUNITY})
         else:
-            return render(request, 'accounts/forms.html', { 'form':form, "form_page_name":'Set Password', "community": settings.COMMUNITY })
+            return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Set Password', "community": settings.COMMUNITY})
 
 
 class AccountRegistration(View):
@@ -90,10 +91,10 @@ class AccountRegistration(View):
     AccountRegistration class used for registration of new users.
     It sends an email containing set password instructions to user if the form data is valid in post request.
     '''
+
     def get(self, request):
         form = UserRegistrationForm()
-        return render(request,'accounts/forms.html', { 'form':form, "form_page_name":'Sign-Up', "community": settings.COMMUNITY })
-
+        return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Sign-Up', "community": settings.COMMUNITY})
 
     def post(self, request):
         form = UserRegistrationForm(request.POST)
@@ -111,13 +112,13 @@ class AccountRegistration(View):
                 'uid': str(urlsafe_base64_encode(force_bytes(user.pk)), 'utf-8'),
                 'token': account_activation_token.make_token(user),
                 "community": settings.COMMUNITY,
-                })
+            })
             to_email = form.cleaned_data.get('email')
-            email = EmailMessage( mail_subject, message, to=[to_email] )
+            email = EmailMessage(mail_subject, message, to=[to_email])
             email.send()
-            return render(request,'accounts/messages.html',{ "msg_page_name": "Success", 'message': 'We have send you a mail to activate your account.',"community": settings.COMMUNITY })
+            return render(request, 'accounts/messages.html', {"msg_page_name": "Success", 'message': 'We have send you a mail to activate your account.', "community": settings.COMMUNITY})
         else:
-            return render(request, 'accounts/forms.html', { 'form':form, "form_page_name":'Sign Up', "community": settings.COMMUNITY })
+            return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Sign Up', "community": settings.COMMUNITY})
 
 
 def home(request):

@@ -36,7 +36,7 @@ Now, go to `127.0.0.1:8000/`, your welcome page should show up.
 
 - For development environment only
     - For registration views, go to community_connect/settings and uncomment `EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'`
-
+    
 ## User Documentation
 The following is the instructions to set up for editing the user-documentation.
 The user documentation is done using Mkdocs.

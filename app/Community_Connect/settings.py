@@ -81,9 +81,10 @@ DATABASES = {
         'USER': 'community_connect',
         'PASSWORD': 'MY_AWESOME_PASSWORD',
         'HOST': 'localhost',
-        'PORT': '', # Leaving port black should work, if it doesn't, 5432 should work.
+        'PORT': '',  # Leaving port black should work, if it doesn't, 5432 should work.
     }
 }
+
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
 # For Production; Needs to move to .env with Database
