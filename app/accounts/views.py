@@ -1,11 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.shortcuts import render
 from django.http import HttpResponse
-from django.contrib.auth import login, authenticate
-from .forms import LoginForm, UserRegistrationForm
+from .forms import LoginForm, UserRegistrationForm, ResetPassword
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from .tokens import account_activation_token
+from django.contrib.auth.models import User
+from django.core.mail import EmailMessage
+from django.views import View
+
 
 @login_required(login_url='/accounts/login/')
 def dashboard(request):
@@ -29,22 +38,86 @@ def user_login(request):
                 return HttpResponse('invalid login')
     else:
         form = LoginForm()
-        return render(request, 'accounts/login.html', { 'form':form, "community": settings.COMMUNITY })
+        return render(request, 'accounts/login.html', { 'form':form, "form_page_name":'Login', "community": settings.COMMUNITY })
 
 
-def register(request):
-    if request.method == 'POST':
-        user_form = UserRegistrationForm(request.POST)
-        if user_form.is_valid():
-            new_user = user_form.save(commit=False)
-            new_user.set_password(user_form.cleaned_data['password'])
-            new_user.save()
-            return render(request,'accounts/register_done.html',{'new_user':new_user})
+class AccountActivation(View):
+    '''
+    AccountActivation class used for activating new user's account.
+    Once a user clicks on the link from their email. It gives them an oppertunity to set their password.
+    '''
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            login(request, user)
+            form = ResetPassword()
+            return render(request, 'accounts/forms.html', { 'form':form, "form_page_name":'Set Password', "community": settings.COMMUNITY })
         else:
-            return render(request,'accounts/register.html', {'user_form':user_form, "community": settings.COMMUNITY})
-    else:
-        user_form=UserRegistrationForm()
-        return render(request,'accounts/register.html', {'user_form':user_form, "community": settings.COMMUNITY})
+            return render(request,'accounts/messages.html',{ "msg_page_name": "Failed", 'message': 'Link is invalid!',"community": settings.COMMUNITY })
+
+    def post(self, request, uidb64, token):
+        form = ResetPassword(request.POST)
+        if form.is_valid():
+            cd=form.cleaned_data
+            user = authenticate(password=cd['password'])
+            try:
+                uid = force_text(urlsafe_base64_decode(uidb64))
+                user = User.objects.get(pk=uid)
+            except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+                user = None
+            if user is not None and account_activation_token.check_token(user, token):
+                user.is_active = True
+                user.set_password(form.cleaned_data['password'])
+                user.save()
+                login(request, user)
+                # return redirect('home')
+                return render(request,'accounts/messages.html',{ "msg_page_name": "Success", 'message': 'Thank you for your email confirmation. Now you can login your account.',"community": settings.COMMUNITY })
+            else:
+                return render(request,'accounts/messages.html',{ "msg_page_name": "Failed", 'message': 'Link is invalid!',"community": settings.COMMUNITY })
+        else:
+            return render(request, 'accounts/forms.html', { 'form':form, "form_page_name":'Set Password', "community": settings.COMMUNITY })
+
+
+class AccountRegistration(View):
+    '''
+    AccountRegistration class used for registration of new users.
+    It sends an email containing set password instructions to user if the form data is valid in post request.
+    '''
+    def get(self, request):
+        form = UserRegistrationForm()
+        return render(request,'accounts/forms.html', { 'form':form, "form_page_name":'Sign-Up', "community": settings.COMMUNITY })
+
+
+    def post(self, request):
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.is_active = False
+            user.save()
+            current_site = get_current_site(request)
+            mail_subject = 'Please activate your account.'
+            message = render_to_string('accounts/activate.html', {
+                'protocol': request.scheme,
+                'user': user,
+                'domain': current_site.domain,
+                'uid': str(urlsafe_base64_encode(force_bytes(user.pk)), 'utf-8'),
+                'token': account_activation_token.make_token(user),
+                "community": settings.COMMUNITY,
+                })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage( mail_subject, message, to=[to_email] )
+            email.send()
+            return render(request,'accounts/messages.html',{ "msg_page_name": "Success", 'message': 'We have send you a mail to activate your account.',"community": settings.COMMUNITY })
+        else:
+            return render(request, 'accounts/forms.html', { 'form':form, "form_page_name":'Sign Up', "community": settings.COMMUNITY })
 
 
 def home(request):

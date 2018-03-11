@@ -1,13 +1,18 @@
 #logo-container, .header, .section_header {
     font-family: 'Lobster', cursive;
 }
-#sign_up_form_section {
+#message_section {
+    min-height: 40vh;
+}
+#form_section {
     width: 100%;
     padding: 20px;
+    min-height: 50vh;
 }
 @media all and (min-width: 500px) {
-    #sign_up_form_section {
+    #form_section {
         width: 70%;
+        min-height: 50vh;
     }
 }
 .errorlist {
@@ -19,3 +24,23 @@
 .errorlist li {
     padding: 7px;
 }
+/* Custom scroll bar styles */
+    /* width */
+    ::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
