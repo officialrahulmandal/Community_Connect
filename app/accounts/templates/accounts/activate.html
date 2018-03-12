@@ -1,0 +1,14 @@
+{% autoescape off %}
+Hi {{ user.username }},
+Please click on the link to verify your registration.
+Verfication lets you select the channels for which you want to receive the mails.
+You can unsubscribe from the emails at any time.
+
+{{ protocol }}://{{ domain }}{% url 'reset' uidb64=uid token=token %}
+
+If clicking the link above doesn't work, please copy and paste the URL in a new browser
+window instead.
+
+Sincerely,
+The {{ community.community_name }} Team
+{% endautoescape %}

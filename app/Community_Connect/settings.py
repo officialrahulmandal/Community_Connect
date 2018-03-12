@@ -81,9 +81,18 @@ DATABASES = {
         'USER': 'community_connect',
         'PASSWORD': 'MY_AWESOME_PASSWORD',
         'HOST': 'localhost',
-        'PORT': '', # Leaving port black should work, if it doesn't, 5432 should work.
+        'PORT': '',  # Leaving port black should work, if it doesn't, 5432 should work.
     }
 }
+
+
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
+# For Production; Needs to move to .env with Database
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = ''
+# EMAIL_HOST_PASSWORD = ''
+# EMAIL_PORT = 587
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
