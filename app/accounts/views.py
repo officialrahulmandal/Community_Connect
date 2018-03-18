@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.http import HttpResponse
-from .forms import LoginForm, UserRegistrationForm, ResetPassword
-from django.contrib.auth.decorators import login_required
+from .forms import LoginForm, UserRegistrationForm, ResetPassword, VolunteerUserRegistrationForm
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
@@ -16,9 +15,15 @@ from django.core.mail import EmailMessage
 from django.views import View
 
 
-@login_required(login_url='/accounts/login/')
 def dashboard(request):
-    return render(request, 'accounts/dashboard.html', {'section': 'dashboard', "community": settings.COMMUNITY})
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            return redirect('/admin')
+        else:
+            is_admin = request.user.groups.filter(name='admin').exists()
+            return render(request, 'accounts/dashboard.html', {'is_admin': is_admin, "community": settings.COMMUNITY})
+    else:
+        return redirect('/accounts/login')
 
 
 def user_login(request):
@@ -54,10 +59,6 @@ class AccountActivation(View):
         except(TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
         if user is not None and account_activation_token.check_token(user, token):
-            user.is_active = True
-            user.set_password(form.cleaned_data['password'])
-            user.save()
-            login(request, user)
             form = ResetPassword()
             return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Set Password', "community": settings.COMMUNITY})
         else:
@@ -78,7 +79,6 @@ class AccountActivation(View):
                 user.set_password(form.cleaned_data['password'])
                 user.save()
                 login(request, user)
-                # return redirect('home')
                 return render(request, 'accounts/messages.html', {"msg_page_name": "Success", 'message': 'Thank you for your email confirmation. Now you can login your account.', "community": settings.COMMUNITY})
             else:
                 return render(request, 'accounts/messages.html', {"msg_page_name": "Failed", 'message': 'Link is invalid!', "community": settings.COMMUNITY})
@@ -101,6 +101,28 @@ class AccountRegistration(View):
         if form.is_valid():
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
+            user.is_active = True
+            user.save()
+            return render(request, 'accounts/messages.html', {"msg_page_name": "Success", 'message': 'Your Account has been created, You can now login.', "community": settings.COMMUNITY})
+        else:
+            return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Sign Up', "community": settings.COMMUNITY})
+
+
+class AccountVolunteerRegister(View):
+    '''
+    AccountRegistration class used for registration of new users.
+    It sends an email containing set password instructions to user if the form data is valid in post request.
+    '''
+
+    def get(self, request):
+        form = VolunteerUserRegistrationForm()
+        return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Sign-Up', "community": settings.COMMUNITY})
+
+    def post(self, request):
+        form = VolunteerUserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(User.objects.make_random_password())
             user.is_active = False
             user.save()
             current_site = get_current_site(request)
@@ -116,7 +138,8 @@ class AccountRegistration(View):
             to_email = form.cleaned_data.get('email')
             email = EmailMessage(mail_subject, message, to=[to_email])
             email.send()
-            return render(request, 'accounts/messages.html', {"msg_page_name": "Success", 'message': 'We have send you a mail to activate your account.', "community": settings.COMMUNITY})
+            form = VolunteerUserRegistrationForm()
+            return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Sign-Up', "community": settings.COMMUNITY})
         else:
             return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Sign Up', "community": settings.COMMUNITY})
 

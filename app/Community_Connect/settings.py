@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
+    'mails.apps.MailsConfig',
 ]
 
 MIDDLEWARE = [
@@ -81,12 +82,14 @@ DATABASES = {
         'USER': 'community_connect',
         'PASSWORD': 'MY_AWESOME_PASSWORD',
         'HOST': 'localhost',
-        'PORT': '',  # Leaving port black should work, if it doesn't, 5432 should work.
+        # Leaving port black should work, if it doesn't, 5432 should work.
+        'PORT': '',
     }
 }
 
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development only
+# During development only
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # For Production; Needs to move to .env with Database
 # EMAIL_USE_TLS = True
 # EMAIL_HOST = 'smtp.gmail.com'
@@ -131,6 +134,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'dashboard'
 
 with open('./data.json', 'r') as f:
     COMMUNITY = json.loads(f.read())

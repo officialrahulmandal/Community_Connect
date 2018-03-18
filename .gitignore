@@ -10,3 +10,6 @@ media
 
 ### Virtual Environment ###
 venv/
+
+### Text Editor ###
+.vscode/
