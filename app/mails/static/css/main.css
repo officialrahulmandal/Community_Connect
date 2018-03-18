@@ -9,13 +9,13 @@
     padding: 20px;
     min-height: 50vh;
 }
+
 @media all and (min-width: 500px) {
     #form_section {
         width: 70%;
         min-height: 50vh;
     }
 }
-
 #ctaBtn{
     position: absolute;
     left: 50%;
@@ -27,6 +27,7 @@
     text-align: center;
 }
 
+/* Forms Page */
 .errorlist {
     color: red;
     border: 1px red solid;

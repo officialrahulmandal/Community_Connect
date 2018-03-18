@@ -1,11 +1,14 @@
 # Community-Connect
+
 Django based application to help in the management of the communities.
 
-# Installation
+## Installation
+
 Instructions only for linux debian-based system,
 please find equivalent for your OS.
 
-## Django Application
+### Django Application
+
 The following are the instructions to install the the application in the workbench to start working.
 
 1. Install Python 3.5 and Pip
@@ -31,13 +34,15 @@ The following are the instructions to install the the application in the workben
         2. inside the virtual environment, run `python3 manage.py makemigrations`
         3. inside the virtual environment, run `python3 manage.py migrate`
 5. Run the server
+
 Inside virtual-environment, run `python3 manage.py runserver`.
 Now, go to `127.0.0.1:8000/`, your welcome page should show up.
 
 - For development environment only
-    - For registration views, go to community_connect/settings and uncomment `EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'`
-    
-## User Documentation
+  - For registration views, go to community_connect/settings and uncomment `EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'`
+
+### User Documentation
+
 The following is the instructions to set up for editing the user-documentation.
 The user documentation is done using Mkdocs.
 Nagivate to the `docs/build` folder and run `mkdocs serve` to work on the documentation.
