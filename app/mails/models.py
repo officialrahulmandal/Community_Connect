@@ -4,14 +4,17 @@ class User(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField()
     password = models.CharField(max_length=50)
-    COMMUNITY_CHOICES = (
-        ('PYDELHI', 'PyDelhi'),
-        ('ILUGD', 'ILUG-D')
+    CHANNELS_CHOICES = (
+        ('nextevent', 'Next Event Update'),
+        ('resources', 'Resources'),
+        ('hire', 'Hiring and Pitching'),
+        ('feedback', 'Feedback'),
+        ('volunteer', 'Volunteers')
     )
     channels_Subscribe = models.CharField(
         max_length=70, 
-        choices=COMMUNITY_CHOICES, 
-        default='PYDELHI'
+        choices=CHANNELS_CHOICES, 
+        default='nextevent'
     )
     administrator = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
