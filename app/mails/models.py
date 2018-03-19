@@ -1,4 +1,5 @@
 from django.db import models
+from multiselectfield import MultiSelectField
 
 class User(models.Model):
     name = models.CharField(max_length=255)
@@ -11,10 +12,9 @@ class User(models.Model):
         ('feedback', 'Feedback'),
         ('volunteer', 'Volunteers')
     )
-    channels_Subscribe = models.CharField(
+    channels_Subscribe = MultiSelectField(
         max_length=70, 
-        choices=CHANNELS_CHOICES, 
-        default='nextevent'
+        choices=CHANNELS_CHOICES
     )
     administrator = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
