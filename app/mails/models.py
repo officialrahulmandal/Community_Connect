@@ -1,65 +1,41 @@
 from django.db import models
-from django.contrib.auth.models import User
 
-class Options(models.Model):
-    key = models.CharField(max_length=255)
-    value = models.TextField()
-
-    def __str__(self):
-        return self.key
-
-class Statistics(models.Model):
-    key = models.CharField(max_length=255)
-    counter = models.IntegerField()
-    types = models.CharField(max_length=255)
-    
-    def __str__(self):
-        return self.key
-
-
-class Logs(models.Model):
-    key = models.CharField(max_length=255)
-    value = models.TextField()
-    types = models.CharField(max_length=255)
-    
-    def __str__(self):
-        return self.key
-
-
-class Content(models.Model):
-    title = models.CharField(max_length=255)
-    content = models.TextField()
-    types = models.CharField(max_length=255)
-    date_added = models.DateField()
-    
-    def __str__(self):
-        return self.title
-
-
-class ContentMeta(models.Model):
-    key = models.CharField(max_length=255)
-    value = models.TextField()
-    content_id = models.ForeignKey('Content', on_delete=models.CASCADE)
+class User(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    password = models.CharField(max_length=50)
+    COMMUNITY_CHOICES = (
+        ('PYDELHI', 'PyDelhi'),
+        ('ILUGD', 'ILUG-D')
+    )
+    channels_Subscribe = models.CharField(
+        max_length=70, 
+        choices=COMMUNITY_CHOICES, 
+        default='PYDELHI'
+    )
+    administrator = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.key
+        return self.name
 
 
-class EmailGroups(models.Model):
-    group_name = models.CharField(max_length=255)
-    label = models.TextField()
+class SentMail(models.Model):
+    subject = models.CharField(max_length=255)
+    body = models.TextField()
+    time = models.DateTimeField()
+    sender = models.EmailField()
+    open_counter = models.IntegerField()
 
     def __str__(self):
-        return self.group_name
+        return self.subject
 
 
-class EmailSchedules(models.Model):
-    content_id = models.ForeignKey('Content', on_delete=models.CASCADE)
-    email_group = models.ForeignKey('EmailGroups', on_delete=models.CASCADE)
-    schedule_time = models.DateField()
-    status = models.IntegerField()
+class EmailDrafts(models.Model):
+    subject = models.CharField(max_length=255)
+    body = models.TextField()
+    variable = models.CharField(max_length=255)
+    timer = models.DateTimeField()
 
-
-class EmailRelations(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    group = models.ForeignKey('EmailGroups', on_delete=models.CASCADE)
+    def __str__(self):
+        return self.subject
