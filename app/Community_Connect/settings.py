@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'mails.apps.MailsConfig',
+    'multiselectfield',
+    'csvimport.app.CSVConf'
 ]
 
 MIDDLEWARE = [
