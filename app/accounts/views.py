@@ -13,6 +13,7 @@ from .tokens import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.views import View
+from mails.models import SentMail
 
 
 def dashboard(request):
@@ -21,8 +22,9 @@ def dashboard(request):
             return redirect('/admin')
         else:
             is_admin = request.user.groups.filter(name='admin').exists()
-
-            return render(request, 'accounts/dashboard.html', {'is_admin': is_admin, "community": settings.COMMUNITY})
+            sentMails = (SentMail.objects.order_by('-time')[:10]).values()
+            print(sentMails)
+            return render(request, 'accounts/dashboard.html', {'mails': sentMails, 'is_admin': is_admin, "community": settings.COMMUNITY})
     else:
         return redirect('/accounts/login')
 

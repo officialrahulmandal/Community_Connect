@@ -4,6 +4,9 @@
 #message_section {
     min-height: 40vh;
 }
+#mailbox {
+    border: 1px solid black;
+}
 #form_section {
     width: 100%;
     padding: 20px;
