@@ -3,9 +3,10 @@ from multiselectfield import MultiSelectField
 from django.contrib.auth.models import User
 
 
-class User_Channel(models.Model):
-    username = models.ForeignKey(
-        User, on_delete=models.CASCADE)
+class UserExtended(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE)
     CHANNELS_CHOICES = (
         ('nextevent', 'Next Event Update'),
         ('resources', 'Resources'),
@@ -13,16 +14,18 @@ class User_Channel(models.Model):
         ('feedback', 'Feedback'),
         ('volunteer', 'Volunteers')
     )
+
     channels_Subscribe = MultiSelectField(
         max_length=70,
         choices=CHANNELS_CHOICES
     )
+    userKey = models.CharField(max_length=25)
 
     def __str__(self):
-        return self.username
+        return self.user.username
 
     class Meta:
-        verbose_name_plural = "User_Channels"
+        verbose_name_plural = "UserExtended"
 
 
 class SentMail(models.Model):

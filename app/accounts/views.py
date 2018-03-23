@@ -13,7 +13,9 @@ from .tokens import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.views import View
-from mails.models import SentMail
+from mails.models import SentMail, UserExtended
+import random
+import string
 
 
 def dashboard(request):
@@ -130,6 +132,11 @@ class AccountVolunteerRegister(View):
             user.save()
             current_site = get_current_site(request)
             mail_subject = '[PyDelhi] Please activate your account.'
+            userKey = ''.join(random.choice(string.ascii_uppercase +
+                                            string.ascii_lowercase + string.digits) for _ in range(25))
+            UserExtendedSave = UserExtended(
+                user=user, userKey=userKey)
+            UserExtendedSave.save()
             message = render_to_string('accounts/activate.html', {
                 'protocol': request.scheme,
                 'user': user,
@@ -137,6 +144,7 @@ class AccountVolunteerRegister(View):
                 'uid': str(urlsafe_base64_encode(force_bytes(user.pk)), 'utf-8'),
                 'token': account_activation_token.make_token(user),
                 "community": settings.COMMUNITY,
+                "unsubscribe": userKey,
             })
             to_email = form.cleaned_data.get('email')
             email = EmailMessage(mail_subject, message, to=[to_email])
@@ -145,6 +153,18 @@ class AccountVolunteerRegister(View):
             return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Sign-Up', "community": settings.COMMUNITY})
         else:
             return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Sign Up', "community": settings.COMMUNITY})
+
+
+def unsubscribe(request, username, unsubscribe):
+    try:
+        user = UserExtended.objects.get(user__username=username)
+    except UserExtended.DoesNotExist:
+        return render(request, 'accounts/messages.html', {"msg_page_name": "Failed", 'message': 'You are already unsubscribed, If you think this is an error, please contact the community volunteers.', "community": settings.COMMUNITY})
+    if unsubscribe == user.userKey:
+        User.objects.filter(pk=user.user.pk).delete()
+        return render(request, 'accounts/messages.html', {"msg_page_name": "Success", 'message': 'You have unsubscribed, if you wish to subscribe again, please sign-up again.', "community": settings.COMMUNITY})
+    else:
+        return render(request, 'accounts/messages.html', {"msg_page_name": "Failed", 'message': 'Incorrect unsubscribe Key!', "community": settings.COMMUNITY})
 
 
 def home(request):

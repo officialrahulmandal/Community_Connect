@@ -19,6 +19,8 @@ urlpatterns = [
     path('reset/<uidb64>/<token>',
          views.AccountActivation.as_view(), name='reset'),
     # Accounts
+    path('unsubscribe/<username>/<unsubscribe>',
+         views.unsubscribe, name='unsubscribe'),
     path('login/', login, {
         'redirect_authenticated_user': True,
         'template_name': 'accounts/forms.html',
