@@ -1,10 +1,10 @@
 from django.contrib import admin
 from .models import (
-    User,
+    User_Channel,
     SentMail,
-    EmailDrafts
+    EmailDraft
 )
 
-admin.site.register(User)
+admin.site.register(User_Channel)
 admin.site.register(SentMail)
-admin.site.register(EmailDrafts)
+admin.site.register(EmailDraft)

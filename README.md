@@ -34,6 +34,7 @@ The following are the instructions to install the the application in the workben
         2. inside the virtual environment, run `python3 manage.py makemigrations`
         3. inside the virtual environment, run `python3 manage.py migrate`
 5. Run the server
+6. Create Group 'admin' from '\admin' and allow it to access all the models in mails and accounts.
 
 Inside virtual-environment, run `python3 manage.py runserver`.
 Now, go to `127.0.0.1:8000/`, your welcome page should show up.

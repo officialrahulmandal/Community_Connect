@@ -1,10 +1,11 @@
 from django.db import models
 from multiselectfield import MultiSelectField
+from django.contrib.auth.models import User
 
-class User(models.Model):
-    name = models.CharField(max_length=255)
-    email = models.EmailField()
-    password = models.CharField(max_length=50)
+
+class User_Channel(models.Model):
+    username = models.ForeignKey(
+        User, on_delete=models.CASCADE)
     CHANNELS_CHOICES = (
         ('nextevent', 'Next Event Update'),
         ('resources', 'Resources'),
@@ -13,14 +14,15 @@ class User(models.Model):
         ('volunteer', 'Volunteers')
     )
     channels_Subscribe = MultiSelectField(
-        max_length=70, 
+        max_length=70,
         choices=CHANNELS_CHOICES
     )
-    administrator = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        return self.username
+
+    class Meta:
+        verbose_name_plural = "User_Channels"
 
 
 class SentMail(models.Model):
@@ -34,11 +36,11 @@ class SentMail(models.Model):
         return self.subject
 
 
-class EmailDrafts(models.Model):
+class EmailDraft(models.Model):
     subject = models.CharField(max_length=255)
     body = models.TextField()
-    variable = models.CharField(max_length=255)
-    timer = models.DateTimeField()
+    variable = models.CharField(max_length=255, null=True, blank=True)
+    timer = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.subject

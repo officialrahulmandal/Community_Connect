@@ -21,6 +21,7 @@ def dashboard(request):
             return redirect('/admin')
         else:
             is_admin = request.user.groups.filter(name='admin').exists()
+
             return render(request, 'accounts/dashboard.html', {'is_admin': is_admin, "community": settings.COMMUNITY})
     else:
         return redirect('/accounts/login')
@@ -126,7 +127,7 @@ class AccountVolunteerRegister(View):
             user.is_active = False
             user.save()
             current_site = get_current_site(request)
-            mail_subject = 'Please activate your account.'
+            mail_subject = '[PyDelhi] Please activate your account.'
             message = render_to_string('accounts/activate.html', {
                 'protocol': request.scheme,
                 'user': user,
@@ -145,4 +146,6 @@ class AccountVolunteerRegister(View):
 
 
 def home(request):
+    if request.user.is_authenticated:
+        return redirect('/accounts')
     return render(request, 'index.html', {"community": settings.COMMUNITY})
