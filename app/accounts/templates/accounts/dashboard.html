@@ -5,6 +5,12 @@
 <!-- signup form  -->
 <div class="container">
     <h1 class='section_header'>Dashboard</h1>
+    <a href='{% url "edit_profile" %}'>
+        <button type="submit" class="btn waves-effect waves-light {{ community.site_theme_text }}">Edit Profile</button>
+    </a>
+    <a href='{% url "reset_request" %}'>
+        <button type="submit" class="btn waves-effect waves-light {{ community.site_theme_text }}">Change Password</button>
+    </a>
     <div id='message_section'>
         {% for mail in mails %}
         <div class="row">

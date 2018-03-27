@@ -10,7 +10,7 @@
             {% csrf_token %}
             <!-- Django will take care of spiting the form. -->
             {{ form.as_p }}
-            <button type="submit" class="btn-large waves-effect waves-light {{ community.site_theme_text }}">Create account</button>
+            <button type="submit" class="btn-large waves-effect waves-light {{ community.site_theme_text }}">{{ form_btn_name }}</button>
         </form>
     </div>
 </div>

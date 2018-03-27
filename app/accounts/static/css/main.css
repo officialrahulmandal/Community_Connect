@@ -1,5 +1,8 @@
+button {
+    margin: 3px;
+}
 #logo-container, .header, .section_header {
-    font-family: 'Lobster', cursive;
+     font-family: 'Francois One', sans-serif;
 }
 #message_section {
     min-height: 40vh;

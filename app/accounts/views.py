@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.http import HttpResponse
-from .forms import LoginForm, UserRegistrationForm, ResetPassword, VolunteerUserRegistrationForm
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
@@ -16,19 +15,73 @@ from django.views import View
 from mails.models import SentMail, UserExtended
 import random
 import string
+from accounts.forms import (
+    LoginForm,
+    UserRegistrationForm,
+    ResetPassword,
+    VolunteerUserRegistrationForm,
+    UserEditProfileForm
+)
 
 
 def dashboard(request):
     if request.user.is_authenticated:
-        if request.user.is_superuser:
-            return redirect('/admin')
-        else:
-            is_admin = request.user.groups.filter(name='admin').exists()
-            sentMails = (SentMail.objects.order_by('-time')[:10]).values()
-            print(sentMails)
-            return render(request, 'accounts/dashboard.html', {'mails': sentMails, 'is_admin': is_admin, "community": settings.COMMUNITY})
+        is_admin = request.user.groups.filter(name='admin').exists()
+        sentMails = (SentMail.objects.order_by('-time')[:10]).values()
+        return render(request, 'accounts/dashboard.html', {'mails': sentMails, 'is_admin': is_admin, "community": settings.COMMUNITY})
     else:
-        return redirect('/accounts/login')
+        return redirect('login')
+
+
+def request_reset_password(request):
+    if request.user.is_authenticated:
+        user = request.user
+        return redirect('reset',
+                        str(urlsafe_base64_encode(
+                            force_bytes(request.user.pk)), 'utf-8'),
+                        account_activation_token.make_token(user)
+                        )
+    else:
+        return redirect('login')
+
+
+class EditProfile(View):
+    '''
+    If user decides to edit some information of his/her account,
+    the control is transfered to this function.
+    '''
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            is_admin = request.user.groups.filter(name='admin').exists()
+            form = UserEditProfileForm(user=request.user)
+            return render(request, 'accounts/forms.html', {
+                'form_btn_name': 'Edit Information',
+                'form': form,
+                'is_admin': is_admin,
+                "form_page_name": 'Edit Profile',
+                "community": settings.COMMUNITY})
+        else:
+            return redirect('login')
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            is_admin = request.user.groups.filter(name='admin').exists()
+            form = UserEditProfileForm(request.POST, user=request.user)
+            if form.is_valid():
+                cd = form.cleaned_data
+                User.objects.filter(pk=request.user.pk).update(
+                    username=cd['username'], email=cd['email'], first_name=cd['first_name'], last_name=cd['last_name'])
+                form = UserEditProfileForm(user=request.user)
+                return redirect('dashboard')
+            return render(request, 'accounts/forms.html', {
+                'form_btn_name': 'Edit Profile',
+                'form': form,
+                'is_admin': is_admin,
+                "form_page_name": 'Edit Profile',
+                "community": settings.COMMUNITY})
+        else:
+            return redirect('login')
 
 
 def user_login(request):
@@ -48,7 +101,10 @@ def user_login(request):
                 return HttpResponse('invalid login')
     else:
         form = LoginForm()
-        return render(request, 'accounts/login.html', {'form': form, "form_page_name": 'Login', "community": settings.COMMUNITY})
+        return render(request, 'accounts/login.html', {
+            'form': form,
+            "form_page_name": 'Login',
+            "community": settings.COMMUNITY})
 
 
 class AccountActivation(View):
@@ -65,7 +121,11 @@ class AccountActivation(View):
             user = None
         if user is not None and account_activation_token.check_token(user, token):
             form = ResetPassword()
-            return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Set Password', "community": settings.COMMUNITY})
+            return render(request, 'accounts/forms.html', {
+                'form_btn_name': 'Activate Account',
+                'form': form,
+                "form_page_name": 'Set Password',
+                "community": settings.COMMUNITY})
         else:
             return render(request, 'accounts/messages.html', {"msg_page_name": "Failed", 'message': 'Link is invalid!', "community": settings.COMMUNITY})
 
@@ -84,11 +144,15 @@ class AccountActivation(View):
                 user.set_password(form.cleaned_data['password'])
                 user.save()
                 login(request, user)
-                return render(request, 'accounts/messages.html', {"msg_page_name": "Success", 'message': 'Thank you for your email confirmation. Now you can login your account.', "community": settings.COMMUNITY})
+                return render(request, 'accounts/messages.html', {"msg_page_name": "Success", 'message': 'Password has been set!', "community": settings.COMMUNITY})
             else:
                 return render(request, 'accounts/messages.html', {"msg_page_name": "Failed", 'message': 'Link is invalid!', "community": settings.COMMUNITY})
         else:
-            return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Set Password', "community": settings.COMMUNITY})
+            return render(request, 'accounts/forms.html', {
+                'form_btn_name': 'Activate Account',
+                'form': form,
+                "form_page_name": 'Set Password',
+                "community": settings.COMMUNITY})
 
 
 class AccountRegistration(View):
@@ -99,7 +163,11 @@ class AccountRegistration(View):
 
     def get(self, request):
         form = UserRegistrationForm()
-        return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Sign-Up', "community": settings.COMMUNITY})
+        return render(request, 'accounts/forms.html', {
+            'form_btn_name': 'Register',
+            'form': form,
+            "form_page_name": 'Sign-Up',
+            "community": settings.COMMUNITY})
 
     def post(self, request):
         form = UserRegistrationForm(request.POST)
@@ -110,7 +178,11 @@ class AccountRegistration(View):
             user.save()
             return render(request, 'accounts/messages.html', {"msg_page_name": "Success", 'message': 'Your Account has been created, You can now login.', "community": settings.COMMUNITY})
         else:
-            return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Sign Up', "community": settings.COMMUNITY})
+            return render(request, 'accounts/forms.html', {
+                'form_btn_name': 'Create Account',
+                'form': form,
+                "form_page_name": 'Sign Up',
+                "community": settings.COMMUNITY})
 
 
 class AccountVolunteerRegister(View):
@@ -121,7 +193,11 @@ class AccountVolunteerRegister(View):
 
     def get(self, request):
         form = VolunteerUserRegistrationForm()
-        return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Sign-Up', "community": settings.COMMUNITY})
+        return render(request, 'accounts/forms.html', {
+            'form_btn_name': 'Create Account',
+            'form_btn_name': 'Edit Information',
+            'form': form, "form_page_name": 'Sign-Up',
+            "community": settings.COMMUNITY})
 
     def post(self, request):
         form = VolunteerUserRegistrationForm(request.POST)
@@ -150,9 +226,17 @@ class AccountVolunteerRegister(View):
             email = EmailMessage(mail_subject, message, to=[to_email])
             email.send()
             form = VolunteerUserRegistrationForm()
-            return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Sign-Up', "community": settings.COMMUNITY})
+            return render(request, 'accounts/forms.html', {
+                'form_btn_name': 'Create Account',
+                'form': form,
+                "form_page_name": 'Sign-Up',
+                "community": settings.COMMUNITY})
         else:
-            return render(request, 'accounts/forms.html', {'form': form, "form_page_name": 'Sign Up', "community": settings.COMMUNITY})
+            return render(request, 'accounts/forms.html', {
+                'form_btn_name': 'Create Account',
+                'form': form,
+                "form_page_name": 'Sign Up',
+                "community": settings.COMMUNITY})
 
 
 def unsubscribe(request, username, unsubscribe):
@@ -169,5 +253,5 @@ def unsubscribe(request, username, unsubscribe):
 
 def home(request):
     if request.user.is_authenticated:
-        return redirect('/accounts')
+        return redirect('dashboard')
     return render(request, 'index.html', {"community": settings.COMMUNITY})

@@ -36,9 +36,9 @@ class DraftMail(View):
                 else:
                     return render(request, 'accounts/messages.html', {"msg_page_name": "Failed", 'message': 'Could not send the mail', "community": settings.COMMUNITY})
             else:
-                return redirect('\login')
+                return redirect('login')
         else:
-            return redirect('\login')
+            return redirect('login')
 
     # My Code to send mails. Ignore or delete if the sendmails part is done. - Ajay
 
