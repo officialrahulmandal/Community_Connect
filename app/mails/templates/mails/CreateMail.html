@@ -1,1 +1,5 @@
-{% autoescape off %} {{ message }} [unsubscribe]({{ unsubscribe }}) {% endautoescape %}
+{% autoescape off %}
+{{ message }}
+---
+{{ protocol }}://{{ domain }}{% url 'unsubscribe' username=username unsubscribe=unsubscribe%}
+{% endautoescape %}

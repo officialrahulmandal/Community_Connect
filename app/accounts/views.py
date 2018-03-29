@@ -144,7 +144,7 @@ class AccountActivation(View):
                 user.set_password(form.cleaned_data['password'])
                 user.save()
                 login(request, user)
-                return render(request, 'accounts/messages.html', {"msg_page_name": "Success", 'message': 'Password has been set!', "community": settings.COMMUNITY})
+                return redirect('dashboard')
             else:
                 return render(request, 'accounts/messages.html', {"msg_page_name": "Failed", 'message': 'Link is invalid!', "community": settings.COMMUNITY})
         else:
@@ -176,7 +176,13 @@ class AccountRegistration(View):
             user.set_password(form.cleaned_data['password'])
             user.is_active = True
             user.save()
-            return render(request, 'accounts/messages.html', {"msg_page_name": "Success", 'message': 'Your Account has been created, You can now login.', "community": settings.COMMUNITY})
+            userKey = ''.join(random.choice(string.ascii_uppercase +
+                                            string.ascii_lowercase + string.digits) for _ in range(25))
+            UserExtendedSave = UserExtended(
+                user=user, userKey=userKey)
+            UserExtendedSave.save()
+            login(request, user)
+            return redirect('dashboard')
         else:
             return render(request, 'accounts/forms.html', {
                 'form_btn_name': 'Create Account',
@@ -206,13 +212,13 @@ class AccountVolunteerRegister(View):
             user.set_password(User.objects.make_random_password())
             user.is_active = False
             user.save()
-            current_site = get_current_site(request)
-            mail_subject = '[PyDelhi] Please activate your account.'
             userKey = ''.join(random.choice(string.ascii_uppercase +
                                             string.ascii_lowercase + string.digits) for _ in range(25))
             UserExtendedSave = UserExtended(
                 user=user, userKey=userKey)
             UserExtendedSave.save()
+            current_site = get_current_site(request)
+            mail_subject = '[PyDelhi] Please activate your account.'
             message = render_to_string('accounts/activate.html', {
                 'protocol': request.scheme,
                 'user': user,

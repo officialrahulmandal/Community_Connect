@@ -36,7 +36,7 @@ The following are the instructions to install the the application in the workben
 5. Run `python3 manage.py group`
 6. Run the server
 
-Inside virtual-environment, run `python3 manage.py runserver`.
+Inside virtual environment, run `python3 manage.py runserver`.
 Now, go to `127.0.0.1:8000/`, your welcome page should show up.
 
 ### User Documentation

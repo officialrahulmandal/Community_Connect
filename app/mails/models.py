@@ -17,7 +17,9 @@ class UserExtended(models.Model):
 
     channels_Subscribe = MultiSelectField(
         max_length=70,
-        choices=CHANNELS_CHOICES
+        choices=CHANNELS_CHOICES,
+        blank=True,
+        null=True
     )
     userKey = models.CharField(max_length=25)
 

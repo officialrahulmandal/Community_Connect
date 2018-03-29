@@ -1,9 +1,11 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
-from .forms import SendMailForm
-from django.contrib.sites.shortcuts import get_current_site
+from mails.forms import SendMailForm
 from django.views import View
+from django.contrib.sites.shortcuts import get_current_site
+from mails.models import UserExtended
+from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 
@@ -20,59 +22,39 @@ class DraftMail(View):
                 form = SendMailForm()
                 return render(request, 'mails/draft.html', {'form': form, 'is_admin': is_admin, "community": settings.COMMUNITY})
             else:
-                return redirect('\login')
+                return redirect('login')
         else:
-            return redirect('\login')
+            return redirect('login')
 
     def post(self, request):
         if request.user.is_authenticated:
             is_admin = request.user.groups.filter(name='admin').exists()
             if is_admin:
-                form = SendMailForm(request.POST)
-                yield render(request, 'accounts/messages.html', {"msg_page_name": "Success", 'message': 'Your mail is send to users', "community": settings.COMMUNITY})
-                if form.is_valid():
-                    pass
-                # Enter the logic to send mails Here
-                else:
-                    return render(request, 'accounts/messages.html', {"msg_page_name": "Failed", 'message': 'Could not send the mail', "community": settings.COMMUNITY})
+                self.sendAllMails(request)
+                return render(request, 'accounts/messages.html', {"msg_page_name": "Success", 'message': 'Your Mails have successfully been send.', "community": settings.COMMUNITY})
             else:
                 return redirect('login')
         else:
             return redirect('login')
 
-    # My Code to send mails. Ignore or delete if the sendmails part is done. - Ajay
-
-        # if form.is_valid():
-        #     recievers = []
-        #     message = cleaned_data.get('message')
-        #     mail_subject = cleaned_data.get('subject')
-        #     current_site = get_current_site(request)
-            # message = render_to_string('mails/CreateMail.html', {
-            #     'protocol': request.scheme,
-            #     'message': message,
-            #     "community": settings.COMMUNITY,
-            #     'domain': current_site.domain,
-            # })
-        #     for user in Users.objects.all():
-        #         recievers.append(user.email)
-        #     send_mail(subject, message, from_email, recievers)
-
-    # How activation mail is send.
-            # mail_subject = '[PyDelhi] Please activate your account.'
-            # userKey = ''.join(random.choice(string.ascii_uppercase +
-            #                                 string.ascii_lowercase + string.digits) for _ in range(25))
-            # UserExtendedSave = UserExtended(
-            #     user=user, userKey=userKey)
-            # UserExtendedSave.save()
-            # message = render_to_string('accounts/activate.html', {
-            #     'protocol': request.scheme,
-            #     'user': user,
-            #     'domain': current_site.domain,
-            #     'uid': str(urlsafe_base64_encode(force_bytes(user.pk)), 'utf-8'),
-            #     'token': account_activation_token.make_token(user),
-            #     "community": settings.COMMUNITY,
-            #     "unsubscribe": userKey,
-            # })
-            # to_email = form.cleaned_data.get('email')
-            # email = EmailMessage(mail_subject, message, to=[to_email])
-            # email.send()
+    def sendAllMails(self, request):
+        form = SendMailForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data.get('subject')
+            message = form.cleaned_data.get('body')
+            current_site = get_current_site(request)
+            for user in User.objects.filter(is_superuser=0):
+                finalMessage = render_to_string('mails/CreateMail.html', {
+                    'protocol': request.scheme,
+                    'message': message,
+                    'username': user.username,
+                    'unsubscribe': UserExtended.objects.get(user=user).userKey,
+                    "community": settings.COMMUNITY,
+                    'domain': current_site.domain,
+                })
+                print(finalMessage)
+                print(subject)
+                EmailMessage(subject, message,
+                             settings.EMAIL_SENDER, to=[user.email])
+        else:
+            raise('Error While sending mails, form not valid.')
