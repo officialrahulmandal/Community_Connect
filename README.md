@@ -33,13 +33,11 @@ The following are the instructions to install the the application in the workben
         1. Open `Community-Connect/Community_Connect/settings.py` and navigate to line `'PASSWORD': 'MY_AWESOME_PASSWORD',` and set your password here.
         2. inside the virtual environment, run `python3 manage.py makemigrations`
         3. inside the virtual environment, run `python3 manage.py migrate`
-5. Run the server
+5. Run `python3 manage.py group`
+6. Run the server
 
-Inside virtual-environment, run `python3 manage.py runserver`.
+Inside virtual environment, run `python3 manage.py runserver`.
 Now, go to `127.0.0.1:8000/`, your welcome page should show up.
-
-- For development environment only
-  - For registration views, go to community_connect/settings and uncomment `EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'`
 
 ### User Documentation
 
