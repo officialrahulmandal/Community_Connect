@@ -19,21 +19,21 @@
 
     "footer_one":"About",
         "footer_one_title_one": "PyDelhi",
-        "footer_one_link_one": "",
+        "footer_one_link_one": "https://pydelhi.org/",
         "footer_one_title_two": "PyDelhi Conf",
-        "footer_one_link_two": "",
+        "footer_one_link_two": "https://conference.pydelhi.org/",
         "footer_one_title_three": "PyCon",
-        "footer_one_link_three": "",
+        "footer_one_link_three": "http://pyconf.hydpy.org/",
         "footer_one_title_four": "Python",
-        "footer_one_link_four": "",
+        "footer_one_link_four": "https://www.python.org/",
     "footer_two":"Connect",
         "footer_two_title_one": "Website",
-        "footer_two_link_one": "",
+        "footer_two_link_one": "http://101.53.136.82",
         "footer_two_title_two": "Mailing List",
         "footer_two_link_two": "",
         "footer_two_title_three": "IRC Channel",
-        "footer_two_link_three": "",
+        "footer_two_link_three": "https://webchat.freenode.net/?channels=%23pydelhi",
         "footer_two_title_four": "Telegram Channel",
-        "footer_two_link_four": ""
+        "footer_two_link_four": "https://t.me/joinchat/AAAAAEK2nzPg0IlwbbAing"
 
 }
