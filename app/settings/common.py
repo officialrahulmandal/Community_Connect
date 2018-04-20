@@ -17,17 +17,8 @@ import json
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '5731r6--yv+poy+y5ttjie8z0=6z0ykf&07_wbu0u@nisw13qc'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -73,22 +64,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Community_Connect.wsgi.application'
-
-# Database
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'community_connect',
-        'USER': 'community_connect',
-        'PASSWORD': 'MY_AWESOME_PASSWORD',
-        'HOST': 'localhost',
-        # Leaving port black should work, if it doesn't, 5432 should work.
-        'PORT': '',
-    }
-}
-
 
 # During development only
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -140,5 +115,5 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'dashboard'
 
-with open('./data.json', 'r') as f:
+with open('./app/data.json', 'r') as f:
     COMMUNITY = json.loads(f.read())
