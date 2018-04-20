@@ -73,7 +73,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_HOST_USER = ''
 # EMAIL_HOST_PASSWORD = ''
 # EMAIL_PORT = 587
-EMAIL_SENDER='kuchbhi@gmail.com'
+EMAIL_SENDER = 'kuchbhi@gmail.com'
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -115,5 +115,5 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'dashboard'
 
-with open('./app/data.json', 'r') as f:
+with open('./data.json', 'r') as f:
     COMMUNITY = json.loads(f.read())
