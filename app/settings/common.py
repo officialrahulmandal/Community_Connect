@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
+
+from dotenv import load_dotenv
+load_dotenv()
 import os
 import json
 
@@ -18,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '5731r6--yv+poy+y5ttjie8z0=6z0ykf&07_wbu0u@nisw13qc'
+SECRET_KEY = os.getenv("key")
 
 # Application definition
 
