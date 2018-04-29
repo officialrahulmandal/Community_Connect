@@ -11,6 +11,7 @@ migrations/
 
 ### Virtual Environment ###
 venv/
+*.env
 
 ### Text Editor ###
 .vscode/

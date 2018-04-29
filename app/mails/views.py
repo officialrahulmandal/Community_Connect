@@ -52,9 +52,12 @@ class DraftMail(View):
                     "community": settings.COMMUNITY,
                     'domain': current_site.domain,
                 })
-                print(finalMessage)
-                print(subject)
-                EmailMessage(subject, message,
-                             settings.EMAIL_SENDER, to=[user.email])
+                try:
+                    email = EmailMessage(
+                        subject, finalMessage, to=[user.email])
+                    email.send()
+                except:
+                    # This needs to be changed, instead of raise we want to use logging.
+                    raise('Check Email Setup, something might be wrong')
         else:
             raise('Error While sending mails, form not valid.')
