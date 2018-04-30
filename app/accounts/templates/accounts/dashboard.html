@@ -1,7 +1,30 @@
 <!-- including the _base.html templates -->
-{% extends 'components/_base.html' %}
-{%block title%} {{ community.community_name }} {%endblock%}
-{%block content%}
-    <h1>Dashboard</h1>
-    <p>welcome to your Dashboard</p>
-{%endblock%}
+{% extends 'components/_base.html' %} {% block title %} {{ community.community_name }} {% endblock %}
+<!-- referring to the block in base.html -->
+{% block content %}
+<!-- signup form  -->
+<div class="container">
+    <h1 class='section_header'>Dashboard</h1>
+    <a href='{% url "edit_profile" %}'>
+        <button type="submit" class="btn waves-effect waves-light {{ community.site_theme_text }}">Edit Profile</button>
+    </a>
+    <a href='{% url "reset_request" %}'>
+        <button type="submit" class="btn waves-effect waves-light {{ community.site_theme_text }}">Change Password</button>
+    </a>
+    <div id='message_section'>
+        {% for mail in mails %}
+        <div class="row">
+            <div class="col s12 m9">
+                <div class="card hoverable">
+                    <div class="card-content">
+                        <span class="card-title">{{ mail.subject }}</span>
+                        <div>{{ mail.time }}</div>
+                        <p>{{ mail.body }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

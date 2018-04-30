@@ -92,3 +92,30 @@ class VolunteerUserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError('Email can\'t be Null.')
         else:
             return email
+
+
+class UserEditProfileForm(forms.ModelForm):
+    '''
+    This form will help in registration of new users when the registration is done by a volunteer.
+    '''
+
+    def __init__(self, *args, **kwargs):
+        self.userdetails = kwargs.pop("user")
+        super(UserEditProfileForm, self).__init__(*args, **kwargs)
+        self.fields['username'].initial = self.userdetails.username
+        self.fields['email'].initial = self.userdetails.email
+        self.fields['first_name'].initial = self.userdetails.first_name
+        self.fields['last_name'].initial = self.userdetails.last_name
+
+    username = forms.CharField(label='username')
+
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name')
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if not email:
+            raise forms.ValidationError('Email can\'t be Null.')
+        else:
+            return email

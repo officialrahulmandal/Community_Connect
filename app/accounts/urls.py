@@ -9,6 +9,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
+
     # Registration
     path('register/',
          views.AccountRegistration.as_view(), name='register'),
@@ -18,11 +19,18 @@ urlpatterns = [
          views.AccountVolunteerRegister.as_view(), name='multi-register'),
     path('reset/<uidb64>/<token>',
          views.AccountActivation.as_view(), name='reset'),
+    path('request/reset_password/',
+         views.request_reset_password, name='reset_request'),
+
     # Accounts
+    path('unsubscribe/<username>/<unsubscribe>',
+         views.unsubscribe, name='unsubscribe'),
+    path('edit_profile/', views.EditProfile.as_view(), name='edit_profile'),
     path('login/', login, {
         'redirect_authenticated_user': True,
         'template_name': 'accounts/forms.html',
         'extra_context': {
+            'form_btn_name': 'Login',
             "form_page_name": 'Login',
             "community": settings.COMMUNITY,
         }

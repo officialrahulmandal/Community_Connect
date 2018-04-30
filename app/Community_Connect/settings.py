@@ -10,24 +10,39 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
+
+from dotenv import load_dotenv
 import os
 import json
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
+# Read .env file and set key/value inside it as environement variables
+# See: http://github.com/theskumar/python-dotenv
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, 'Community_Connect/.env'))
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '5731r6--yv+poy+y5ttjie8z0=6z0ykf&07_wbu0u@nisw13qc'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+# Database
+# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),
+        # Leaving port black should work, if it doesn't, 5432 should work.
+        'PORT': os.getenv("DB_PORT"),
+    }
+}
 
 # Application definition
 
@@ -74,30 +89,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Community_Connect.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'community_connect',
-        'USER': 'community_connect',
-        'PASSWORD': 'MY_AWESOME_PASSWORD',
-        'HOST': 'localhost',
-        # Leaving port black should work, if it doesn't, 5432 should work.
-        'PORT': '',
-    }
-}
-
-
 # During development only
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# For Production; Needs to move to .env with Database
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_USER = ''
-# EMAIL_HOST_PASSWORD = ''
-# EMAIL_PORT = 587
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# For Production
+EMAIL_USE_TLS = True
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = 587
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -131,11 +130,15 @@ USE_L10N = True
 
 USE_TZ = True
 
+ALLOWED_HOSTS = ['*']
+
+DEBUG = os.getenv("DEGUG_MODE")
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'dashboard'

@@ -14,9 +14,9 @@ The following are the instructions to install the the application in the workben
 1. Install Python 3.5 and Pip
     - Debian-Family: `sudo apt install python3.5 python3-pip`
 2. Set virtual environment
-    1. Make: `python3 -m venv venv`
+    1. Make: `python -m venv venv`
     2. Activate: `source venv/bin/activate`
-3. Install Requirements: `pip3 install -r requirements.txt`
+3. Install Requirements: `pip install -r requirements.txt`
 4. Setup Database
     1. Install PostgreSQL
     `sudo apt update; sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib;`
@@ -29,17 +29,26 @@ The following are the instructions to install the the application in the workben
         2. `ALTER ROLE community_connect SET default_transaction_isolation TO 'read committed';`
         3. `ALTER ROLE community_connect SET timezone TO 'UTC';`
     4. Create Database: `CREATE DATABASE community_connect OWNER community_connect;`
-    5. Config Database with django
-        1. Open `Community-Connect/Community_Connect/settings.py` and navigate to line `'PASSWORD': 'MY_AWESOME_PASSWORD',` and set your password here.
-        2. inside the virtual environment, run `python3 manage.py makemigrations`
-        3. inside the virtual environment, run `python3 manage.py migrate`
-5. Run the server
+5. Create .env file in  `Community-Connect/app/Community_Connect/` and set the value for the following variables:
+    - SECRET_KEY="MY_AWESOME_SECRET_KEY"
+    - EMAIL_HOST="MY_AWESOME_SMTP_HOST" # "smtp.gmail.com"
+    - EMAIL_HOST_USER="MY_AWESOME_EMAIL_ID"
+    - EMAIL_HOST_PASSWORD="MY_AWESOME_EMAIL_PASSWORD"
+    - DB_NAME="MY_AWESOME_DB_NAME" # "community_connect"
+    - DB_USER="MY_AWESOME_DB_USER" # "community_connect"
+    - DB_PASSWORD="MY_AWESOME_PASSWORD"
+    - DB_HOST="MY_AWESOME_HOST" # "localhost"
+    - DB_PORT="MY_AWESOME_PORT" # 5432
+    - DEGUG_MODE= True # True | False
 
-Inside virtual-environment, run `python3 manage.py runserver`.
+6. Run following commands, inside the virtual environment
+    1. `python manage.py makemigrations`
+    2. `python manage.py migrate`
+    3. `python manage.py group`
+7. Run the server
+
+Inside virtual environment, run `python manage.py runserver`.
 Now, go to `127.0.0.1:8000/`, your welcome page should show up.
-
-- For development environment only
-  - For registration views, go to community_connect/settings and uncomment `EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'`
 
 ### User Documentation
 

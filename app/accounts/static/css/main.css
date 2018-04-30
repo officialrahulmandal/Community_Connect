@@ -1,8 +1,14 @@
+button {
+    margin: 3px;
+}
 #logo-container, .header, .section_header {
-    font-family: 'Lobster', cursive;
+     font-family: 'Francois One', sans-serif;
 }
 #message_section {
     min-height: 40vh;
+}
+#mailbox {
+    border: 1px solid black;
 }
 #form_section {
     width: 100%;
