@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 from dotenv import load_dotenv
 import os
 import json
+from kombu import serialization
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -53,10 +54,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djcelery',
     'accounts.apps.AccountsConfig',
     'mails.apps.MailsConfig',
     'multiselectfield',
-    'csvimport.app.CSVConf'
+    'csvimport.app.CSVConf',
 ]
 
 MIDDLEWARE = [
@@ -92,6 +94,13 @@ WSGI_APPLICATION = 'Community_Connect.wsgi.application'
 # During development only
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # For Production
+CELERY_ACCEPT_CONTENT = ['application/json',]
+# accept_content = ['application/json']
+# task_serializer = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+# serialization.registry._decoders.pop("application/x-python-serialize")
+
 EMAIL_USE_TLS = True
 EMAIL_HOST = os.getenv("EMAIL_HOST")
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
