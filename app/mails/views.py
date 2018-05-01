@@ -8,7 +8,7 @@ from mails.models import UserExtended
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
-
+from .tasks import send
 
 class DraftMail(View):
     '''
@@ -43,21 +43,6 @@ class DraftMail(View):
             subject = form.cleaned_data.get('subject')
             message = form.cleaned_data.get('body')
             current_site = get_current_site(request)
-            for user in User.objects.filter(is_superuser=0):
-                finalMessage = render_to_string('mails/CreateMail.html', {
-                    'protocol': request.scheme,
-                    'message': message,
-                    'username': user.username,
-                    'unsubscribe': UserExtended.objects.get(user=user).userKey,
-                    "community": settings.COMMUNITY,
-                    'domain': current_site.domain,
-                })
-                try:
-                    email = EmailMessage(
-                        subject, finalMessage, to=[user.email])
-                    email.send()
-                except:
-                    # This needs to be changed, instead of raise we want to use logging.
-                    raise('Check Email Setup, something might be wrong')
+            send.delay(subject, message)
         else:
             raise('Error While sending mails, form not valid.')
