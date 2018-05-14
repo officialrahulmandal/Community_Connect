@@ -12,16 +12,38 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 
 from dotenv import load_dotenv
-load_dotenv()
 import os
 import json
+from kombu import serialization
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+# Read .env file and set key/value inside it as environement variables
+# See: http://github.com/theskumar/python-dotenv
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, 'Community_Connect/.env'))
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("key")
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+
+# Database
+# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),
+        # Leaving port black should work, if it doesn't, 5432 should work.
+        'PORT': os.getenv("DB_PORT"),
+    }
+}
 
 # Application definition
 
@@ -32,10 +54,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djcelery',
     'accounts.apps.AccountsConfig',
     'mails.apps.MailsConfig',
     'multiselectfield',
-    'csvimport.app.CSVConf'
+    'csvimport.app.CSVConf',
 ]
 
 MIDDLEWARE = [
@@ -69,14 +92,21 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Community_Connect.wsgi.application'
 
 # During development only
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# For Production; Needs to move to .env with Database
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = ''
-# EMAIL_HOST_USER = ''
-# EMAIL_HOST_PASSWORD = ''
-# EMAIL_PORT = 587
-EMAIL_SENDER = 'kuchbhi@gmail.com'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# For Production
+CELERY_ACCEPT_CONTENT = ['application/json',]
+# accept_content = ['application/json']
+# task_serializer = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+# serialization.registry._decoders.pop("application/x-python-serialize")
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = 587
+
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -109,11 +139,15 @@ USE_L10N = True
 
 USE_TZ = True
 
+ALLOWED_HOSTS = ['*']
+
+DEBUG = os.getenv("DEGUG_MODE")
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'dashboard'
