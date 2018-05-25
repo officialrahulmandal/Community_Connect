@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'djcelery',
     'accounts.apps.AccountsConfig',
     'mails.apps.MailsConfig',
     'multiselectfield',
